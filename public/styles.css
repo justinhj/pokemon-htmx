@@ -1,0 +1,33 @@
+/* FILEPATH: /Users/justin.heyes-jones/projects/poke/backend/public/styles.css */
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 0 0 20px;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #333;
+    line-height: 1.5;
+}
+
+table th,
+table td {
+    padding: 0.75rem;
+    text-align: left;
+    vertical-align: top;
+    border: 1px solid #e2e8f0;
+}
+
+table th {
+    font-weight: 600;
+    background-color: #f7fafc;
+}
+
+table tr:nth-child(even) {
+    background-color: #f7fafc;
+}
+
+table tr:hover {
+    background-color: #edf2f7;
+}

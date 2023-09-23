@@ -1,0 +1,46 @@
+<!-- FILEPATH: /Users/justin.heyes-jones/projects/poke/backend/public/index.html -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pokemon html play</title>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+</head>
+
+<link rel="stylesheet" type="text/css" href="./styles.css">
+
+<body>
+    <h1>Pokemon</h1>
+    <form method="get" hx-get="./pokemon" hx-trigger="click" hx-target="#pokemon-tbody" hx-swap="innerHtml">
+        <input type="number" hx-trigger="" readonly="readonly" name="pokemon-page" value="1" />
+        <button type="submit">Load</button>
+        <button onclick="decrementPage()">Previous page</button>
+        <button onclick="incrementPage()">Next page</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        <tbody id="pokemon-tbody">
+
+        </tbody>
+    </table>
+    <script>
+        function incrementPage() {
+            const pageInput = document.querySelector('input[name="pokemon-page"]');
+            pageInput.value = parseInt(pageInput.value) + 1;
+        }
+
+        function decrementPage() {
+            const pageInput = document.querySelector('input[name="pokemon-page"]');
+            if (parseInt(pageInput.value) > 1) {
+                pageInput.value = parseInt(pageInput.value) - 1;
+            }
+        }
+    </script>
+</body>
+</html>
