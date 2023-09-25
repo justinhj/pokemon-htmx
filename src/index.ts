@@ -10,12 +10,18 @@ const POKE_POKEMON_URL: string = `${POKE_BASE_URL}pokemon`;
 const POKEMON_PAGE_SIZE: number = 15;
 
 const pokemonListPugFn = pug.compile(`
-  each result in results
+table
+  thead
     tr
-      td= result.name
-      td
-        a(href=result.url)= result.url
-  `);
+      th Name
+      th URL 
+  tbody
+    each result in results
+      tr
+        td= result.name
+        td
+          a(href=result.url)= result.url
+      `);
 
 // add a static route to serve static files from a folder named "public"
 app.use(express.static("public"));
@@ -25,7 +31,7 @@ app.get("/pokemon", async (req: Request, res: Response) => {
     const pokemonPage: number = parseInt(req.query["pokemon-page"] as string) || 1;
     const url = `${POKE_POKEMON_URL}?offset=${(pokemonPage - 1) * POKEMON_PAGE_SIZE}&limit=${POKEMON_PAGE_SIZE}`;
     let r = await axios.get(url);
-    let html = pokemonListPugFn(r.data.results);
+    let html = pokemonListPugFn({results: r.data.results});
     res.send(html);
   } catch (error) {
     console.error(error);
