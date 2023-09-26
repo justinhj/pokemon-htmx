@@ -1,0 +1,14 @@
+div
+  h1 Count of the Pokemen!
+   p #{doubleCount(data.count)}
+table
+  thead
+    tr
+      th Name
+      th URL 
+  tbody
+    each result in data.results
+      tr
+        td= result.name
+        td
+          a(href=result.url)= result.url
