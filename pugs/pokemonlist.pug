@@ -1,6 +1,6 @@
-div
+div(id="pokemon-list") 
   h1 Count of the Pokemen!
-   p #{doubleCount(data.count)}
+   p= data.count
 table
   thead
     tr
@@ -12,3 +12,7 @@ table
         td= result.name
         td
           a(href=result.url)= result.url
+if data.previous
+  a(href=convertUrl(data.previous) hx-boost='true' hx-target='#pokemon-list') Previous
+if data.next 
+  a(href=convertUrl(data.next) hx-boost='true' hx-target='#pokemon-list') Next

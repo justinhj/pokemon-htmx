@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="./styles.css">
 <body>
     <h1>Pokemon</h1>
-    <form method="get" hx-get="./pokemon" hx-trigger="click" hx-target="#pokemon-list" hx-swap="innerHTML">
+    <form method="get" hx-get="./pokemon" hx-trigger="click" hx-target="#pokemon-list" hx-swap="innerHTML" hx-vals='{"offset":0,"limit":10}'>
         <input type="number" hx-trigger="" readonly="readonly" name="pokemon-page" value="1" />
         <button type="submit">Load</button>
         <button onclick="decrementPage()">Previous page</button>
