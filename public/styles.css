@@ -50,6 +50,8 @@ button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+    background-color: #f7fafc; /* Set the background color to match the table */
+    color: #333; /* Set the font color to match the table */
 }
 
 .prev-button {
