@@ -53,11 +53,11 @@ button {
 }
 
 .prev-button {
-    margin-left: auto; /* Ensure the button is aligned to the left */
-    flex-grow: 1; /* Allow the button to grow */
+    margin-right: auto; /* Ensure the button is aligned to the left */
+    width: 100px; /* Set a fixed width */
 }
 
 .next-button {
-    margin-right: auto; /* Ensure the button is aligned to the right */
-    flex-grow: 1; /* Allow the button to grow */
+    margin-left: auto; /* Ensure the button is aligned to the right */
+    width: 100px; /* Set a fixed width */
 }

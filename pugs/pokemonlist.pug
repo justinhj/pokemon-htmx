@@ -4,11 +4,11 @@ div(id="pokemon-list")
     if data.previous
       button(hx-get=convertUrl(data.previous) hx-target='#pokemon-list' class='prev-button') Previous
     else
-      button(disabled) Previous
+      button(disabled class='prev-button') Previous
     if data.next 
       button(hx-get=convertUrl(data.next) hx-target='#pokemon-list' class='next-button') Next
     else
-      button(disabled) Next
+      button(disabled class='next-button') Next
   table
     thead
       tr
