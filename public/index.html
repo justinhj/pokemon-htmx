@@ -1,31 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pokemon html play</title>
+    <title>Explore Pokemon</title>
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 </head>
 <link rel="stylesheet" type="text/css" href="./styles.css">
 <body>
-    <h1>Pokemon</h1>
-    <form method="get" hx-get="./pokemon" hx-trigger="click" hx-target="#pokemon-list" hx-swap="innerHTML" hx-vals='{"offset":0,"limit":10}'>
-        <input type="number" hx-trigger="" readonly="readonly" name="pokemon-page" value="1" />
-        <button type="submit">Load</button>
-        <button onclick="decrementPage()">Previous page</button>
-        <button onclick="incrementPage()">Next page</button>
-    </form>
-    <div id="pokemon-list"></div>
-    <script>
-        function incrementPage() {
-            const pageInput = document.querySelector('input[name="pokemon-page"]');
-            pageInput.value = parseInt(pageInput.value) + 1;
-        }
-
-        function decrementPage() {
-            const pageInput = document.querySelector('input[name="pokemon-page"]');
-            if (parseInt(pageInput.value) > 1) {
-                pageInput.value = parseInt(pageInput.value) - 1;
-            }
-        }
-    </script>
+    <h1>Explore Pokemon</h1>
+    <div id="pokemon-list" hx-get="./pokemon" hx-trigger="load once" hx-target="this" hx-swap="innerHTML" hx-vals='{"offset":0,"limit":10}'></div>
 </body>
 </html>

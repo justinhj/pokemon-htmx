@@ -1,3 +1,9 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
@@ -28,4 +34,30 @@ table tr:nth-child(even) {
 
 table tr:hover {
     background-color: #edf2f7;
+}
+
+/* Style for the button container */
+.button-container {
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Styles for the buttons */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.prev-button {
+    margin-left: auto; /* Ensure the button is aligned to the left */
+    flex-grow: 1; /* Allow the button to grow */
+}
+
+.next-button {
+    margin-right: auto; /* Ensure the button is aligned to the right */
+    flex-grow: 1; /* Allow the button to grow */
 }

@@ -1,18 +1,22 @@
-div(id="pokemon-list") 
-  h1 Count of the Pokemen!
-   p= data.count
-table
-  thead
-    tr
-      th Name
-      th URL 
-  tbody
-    each result in data.results
+div(id="pokemon-list")
+  h1 Exploring #{data.count} Pokemen!
+  p(class="button-container")
+    if data.previous
+      button(hx-get=convertUrl(data.previous) hx-target='#pokemon-list' class='prev-button') Previous
+    else
+      button(disabled) Previous
+    if data.next 
+      button(hx-get=convertUrl(data.next) hx-target='#pokemon-list' class='next-button') Next
+    else
+      button(disabled) Next
+  table
+    thead
       tr
-        td= result.name
-        td
-          a(href=result.url)= result.url
-if data.previous
-  a(href=convertUrl(data.previous) hx-boost='true' hx-target='#pokemon-list') Previous
-if data.next 
-  a(href=convertUrl(data.next) hx-boost='true' hx-target='#pokemon-list') Next
+        th Name
+        th URL 
+    tbody
+      each result in data.results
+        tr
+          td= result.name
+          td
+            a(href=result.url)= result.url

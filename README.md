@@ -13,3 +13,4 @@ The Pokemon API is a RESTful API that provides information about Pokemon, includ
 
 ## This project
 Implements a simple server with express. It wraps the pokemon api which returns json with a htmx friendly version that returns fragments of html loaded in place without page reloads.
+
