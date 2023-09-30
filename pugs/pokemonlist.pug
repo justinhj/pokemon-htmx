@@ -1,14 +1,14 @@
 div(id="pokemon-list")
-  p(class="button-container")
+  p
     if data.previous
-      button(hx-get=convertUrl(data.previous) hx-target='#pokemon-list' class='prev-button') Previous
+      a(href=convertUrl(data.previous) hx-push-url="false" hx-boost='true' hx-target='#pokemon-list' class="waves-effect waves-light btn left") Previous
     else
-      button(disabled class='prev-button') Previous
+      a(disabled class="waves-effect waves-light btn left") Previous
     if data.next 
-      button(hx-get=convertUrl(data.next) hx-target='#pokemon-list' class='next-button') Next
+      a(href=convertUrl(data.next) hx-push-url="false" hx-boost='true' hx-target='#pokemon-list' class="waves-effect waves-light btn right") Next
     else
-      button(disabled class='next-button') Next
-  table
+      a(disabled class="waves-effect waves-light btn right") Next
+  table(class="highlight")
     thead
       tr
         th Name
