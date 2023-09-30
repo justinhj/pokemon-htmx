@@ -1,5 +1,4 @@
 div(id="pokemon-list")
-  h1 Exploring #{data.count} Pokemen!
   p(class="button-container")
     if data.previous
       button(hx-get=convertUrl(data.previous) hx-target='#pokemon-list' class='prev-button') Previous
@@ -13,10 +12,7 @@ div(id="pokemon-list")
     thead
       tr
         th Name
-        th URL 
     tbody
       each result in data.results
         tr
           td= result.name
-          td
-            a(href=result.url)= result.url
