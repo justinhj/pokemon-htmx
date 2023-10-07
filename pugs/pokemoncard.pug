@@ -1,3 +1,12 @@
-h6 #{data.name}
+div(class="card-image")
     img(src=data.sprites.other.dream_world.front_default)
-    p #{data.id}
+    span(class=card-title) #{data.name} #{data.id}
+    div(class="card-content")
+       table
+        tbody
+            tr
+                td Height
+                td #{data.height}
+            tr
+                td Weight
+                td #{data.weight}
