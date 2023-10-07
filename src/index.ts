@@ -24,6 +24,13 @@ function convertUrl(urlString: string): string {
   return url.toString();
 }
 
+// https://pokeapi.co/api/v2/pokemon/1/
+function extractPokemonId(urlString: string): string {
+  const url = new URL(urlString);
+  const pathname = url.pathname;
+  return pathname.split('/')[4];
+}
+
 app.use(express.static("public"));
 
 /**
@@ -35,11 +42,20 @@ app.get("/pokemon", async (req: Request, res: Response) => {
   try {
     const url = `${POKE_POKEMON_URL}?offset=${req.query['offset']}&limit=${req.query['limit']}`;
     let r = await axios.get(url);
-    res.render("pokemonlist", { data: r.data, convertUrl: convertUrl });
+    res.render("pokemonlist", { data: r.data, convertUrl: convertUrl, extractPokemonId: extractPokemonId });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
+});
+
+/**
+ * Handles GET requests to the /card endpoint.
+ * Queries the PokeAPI for a single Pokemon and renders the
+ * 'pokemoncard' Pug template with the response data.
+ */
+app.get("/card", async (req: Request, res: Response) => {
+  res.send("<h1>POGGERZ! " + req.query['id'] + "</h1>");
 });
 
 app.listen(port, () => {

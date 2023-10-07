@@ -14,5 +14,7 @@ div(id="pokemon-list")
         th Name
     tbody
       each result in data.results
+        - var pid = extractPokemonId(result.url);
+        - var vals = {id: pid};
         tr
-          td= result.name
+          td(hx-get="./card" hx-trigger="click" hx-vals=vals hx-target="#pokemon-card" hx-swap="innerHTML") #{result.name}
