@@ -72,7 +72,6 @@ app.get("/card", async (req: Request, res: Response) => {
     const cachedData = cache.get(id);
     var data;
     if (cachedData) {
-      console.log('Retrieving data from cache...');
       data = cachedData;
     } else {
       const url = `${POKE_POKEMON_URL}/${id}`;
