@@ -53,9 +53,17 @@ app.get("/pokemon", async (req: Request, res: Response) => {
  * Handles GET requests to the /card endpoint.
  * Queries the PokeAPI for a single Pokemon and renders the
  * 'pokemoncard' Pug template with the response data.
+ * https://pokeapi.co/api/v2/pokemon/1/
  */
 app.get("/card", async (req: Request, res: Response) => {
-  res.send("<h1>POGGERZ! " + req.query['id'] + "</h1>");
+  try {
+    const url = `${POKE_POKEMON_URL}/${req.query['id']}`;
+    let r = await axios.get(url);
+    res.render("pokemoncard", { data: r.data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 app.listen(port, () => {
