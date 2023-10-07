@@ -1,65 +1,12 @@
-body, html {
-    margin: 0;
-    padding: 15px;
-    box-sizing: border-box;
-}
 
-table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 300px;
-    margin: 0 0 0 20px;
-    font-size: 1rem;
-    font-weight: 400;
-    color: #333;
-    line-height: 1.5;
-}
+/* Pokemon card styling */
 
-table th,
-table td {
-    padding: 0.75rem;
-    text-align: left;
-    vertical-align: top;
-    border: 1px solid #e2e8f0;
-}
-
-table th {
-    font-weight: 600;
-    background-color: #f7fafc;
-}
-
-table tr:nth-child(even) {
-    background-color: #f7fafc;
-}
-
-table tr:hover {
-    background-color: #edf2f7;
-}
-
-/* Style for the button container */
-.button-container {
+.pokemon-card {
+    border-radius: 10px;
     padding: 20px;
-    width: 100%;
-    max-width: 300px;
-    display: flex;
-    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-/* Styles for the buttons */
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #f7fafc; /* Set the background color to match the table */
-    color: #333; /* Set the font color to match the table */
-}
-
-.prev-button {
-    margin-right: auto; /* Ensure the button is aligned to the left */
-    width: 100px; /* Set a fixed width */
-}
-
-.next-button {
-    margin-left: auto; /* Ensure the button is aligned to the right */
-    width: 100px; /* Set a fixed width */
+.pokemon-card-content {
+    background-color: #4A90E2;
 }
