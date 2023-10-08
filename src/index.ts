@@ -14,6 +14,25 @@ const cache = new NodeCache();
 app.set("view engine", "pug");
 app.set("views", "./pugs");
 
+const POKEMON_TYPE_COLOURS = {
+  bug: "#26de81",
+  dragon: "#ffeaa7",
+  electric: "#fed330",
+  fairy: "#FF0069",
+  fighting: "#30336b",
+  fire: "#f0932b",
+  flying: "#81ecec",
+  grass: "#00b894",
+  ground: "#EFB549",
+  ghost: "#a55eea",
+  ice: "#74b9ff",
+  normal: "#95afc0",
+  poison: "#6c5ce7",
+  psychic: "#a29bfe",
+  rock: "#2d3436",
+  water: "#0190FF",
+};
+
 // Helper function that converts the next/previous url from the pokemon api
 // into calls to our own server.
 // For example:
@@ -79,7 +98,7 @@ app.get("/card", async (req: Request, res: Response) => {
       cache.set(id, r.data, 3600);
       data = r.data;
     }
-    res.render("pokemoncard", { data: data });
+    res.render("pokemoncard", { data: data, POKEMON_TYPE_COLOURS: POKEMON_TYPE_COLOURS});
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

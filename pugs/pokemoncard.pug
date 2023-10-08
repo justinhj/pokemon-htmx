@@ -1,12 +1,21 @@
-div(class="card-image")
-    img(src=data.sprites.other.dream_world.front_default)
-    span(class=card-title) #{data.name} #{data.id}
-    div(class="card-content")
-       table
-        tbody
-            tr
-                td Height
-                td #{data.height}
-            tr
-                td Weight
-                td #{data.weight}
+- const titleStyle = `color: ${POKEMON_TYPE_COLOURS[data.types[0].type.name]};`;
+- const attack = data.stats[1].base_stat;
+- const defense = data.stats[2].base_stat;
+- const speed = data.stats[5].base_stat;
+div(class="container")
+    div(class="row")
+        img(src=data.sprites.other.dream_world.front_default width=200)
+    div(class="row")
+        h6(style=titleStyle) #{data.name} #{data.id}
+    div(class="row")
+        table
+            thead 
+                tr
+                    th Attack
+                    th Defense
+                    th Speed
+            tbody
+                tr
+                    td #{attack}
+                    td #{defense}
+                    td #{speed}
