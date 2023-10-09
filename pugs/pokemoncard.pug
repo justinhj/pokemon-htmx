@@ -4,9 +4,9 @@
 - const speed = data.stats[5].base_stat;
 div(class="container")
     div(class="row")
-        img(src=data.sprites.other.dream_world.front_default width=200)
+        img(src=data.sprites.other.dream_world.front_default class="poke-card-img")
     div(class="row")
-        h6(style=titleStyle) #{data.name} #{data.id}
+        h6(style=titleStyle class="poke-card-title") #{data.name} #{data.id}
     div(class="row")
         table
             thead 
