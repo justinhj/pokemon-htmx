@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Explore Pokemon</title>
+    <title>HMTX Pokemon viewer</title>
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -9,16 +9,18 @@
 </head>
 <body>
     <div class="container">
-        <h1>Explore Pokemon</h1>
+        <h1>HTMX Pokemon viewer</h1>
         <div class="row">
             <div class="col s6">
-                <div id="pokemon-list" hx-get="./pokemon" hx-trigger="load once" hx-target="this" hx-swap="innerHTML" hx-vals='{"offset":0,"limit":10}'></div>
+                <div id="pokemon-list" hx-get="./pokemon" hx-trigger="load once" hx-target="this" hx-swap="innerHTML"
+                    hx-vals='{"offset":0,"limit":10}'></div>
             </div>
             <div class="col s6">
                 <div class="row">
                     <div class="col s12 m6">
                         <div class="pokemon-card card large yellow lighten-1">
-                            <div id="pokemon-card" class="pokemon-card-content card-content blue-grey-text text-darken-4 blue lighten-4">
+                            <div id="pokemon-card" class="pokemon-card-content card-content blue-grey-text text-darken-4 blue lighten-4"
+                                hx-get="./card" hx-trigger="load once" hx-vals='{"id": 1}' hx-target="#pokemon-card" hx-swap="innerHTML" >
                             </div>
                         </div>
                     </div>

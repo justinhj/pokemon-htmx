@@ -33,6 +33,25 @@ const POKEMON_TYPE_COLOURS = {
   water: "#0190FF",
 };
 
+const POKEMON_TYPE_BACKGROUND_COLOURS = {
+  bug: "#254870",
+  dragon: "#254870",
+  electric: "#254870",
+  fairy: "#254870",
+  fighting: "#3C74A6",
+  fire: "#254870",
+  flying: "#254870",
+  grass: "#254870",
+  ground: "#254870",
+  ghost: "#254870",
+  ice: "#254870",
+  normal: "#254870",
+  poison: "#254870",
+  psychic: "#254870",
+  rock: "#3C74A6",
+  water: "#254870",
+};
+
 // Helper function that converts the next/previous url from the pokemon api
 // into calls to our own server.
 // For example:
@@ -98,7 +117,7 @@ app.get("/card", async (req: Request, res: Response) => {
       cache.set(id, r.data, 3600);
       data = r.data;
     }
-    res.render("pokemoncard", { data: data, POKEMON_TYPE_COLOURS: POKEMON_TYPE_COLOURS});
+    res.render("pokemoncard", { data: data, POKEMON_TYPE_COLOURS: POKEMON_TYPE_COLOURS, POKEMON_TYPE_BACKGROUND_COLOURS: POKEMON_TYPE_BACKGROUND_COLOURS});
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

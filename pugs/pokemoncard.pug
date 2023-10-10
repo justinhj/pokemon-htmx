@@ -1,4 +1,4 @@
-- const titleStyle = `color: ${POKEMON_TYPE_COLOURS[data.types[0].type.name]};`;
+- const titleStyle = `color: ${POKEMON_TYPE_COLOURS[data.types[0].type.name]}; background-color: ${POKEMON_TYPE_BACKGROUND_COLOURS[data.types[0].type.name]};`;
 - const attack = data.stats[1].base_stat;
 - const defense = data.stats[2].base_stat;
 - const speed = data.stats[5].base_stat;
@@ -8,7 +8,7 @@ div(class="container")
     div(class="row")
         h6(style=titleStyle class="poke-card-title") #{data.name} #{data.id}
     div(class="row")
-        table
+        table(class="centered")
             thead 
                 tr
                     th Attack

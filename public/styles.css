@@ -1,9 +1,5 @@
-
-/* Pokemon card styling */
-
 .poke-card-title {
     text-align: center;
-    background-color: #254870;
     padding: 10px;
     border-radius: 10px;
 }
@@ -23,3 +19,6 @@
     width: 200px;
     height: 200px;
 }
+
+.nav-button {
+    background-color: #4A90E2;
