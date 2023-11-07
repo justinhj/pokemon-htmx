@@ -4,22 +4,12 @@ import NodeCache from 'node-cache';
 import { Exit, Option, Effect, Cause, pipe } from 'effect';
 import { getPokemonList, stringToNumber } from './effects';
 
-
-const o1 = Option.some(1);
-const o2 = Option.some(2);
-
-// Add the two options
-// Note the pipes are unfortunate
-const o3 = o1.pipe(Option.flatMap((a) => o2.pipe(Option.map((b) => a + b))));
-
-const o4 = Option.gen(function* (_) {});
-
-
 const app: express.Application = express();
 const port: number = 8080;
 
 const POKE_BASE_URL: string = "https://pokeapi.co/api/v2/";
 const POKE_POKEMON_URL: string = `${POKE_BASE_URL}pokemon`;
+const POKE_POKEMON_PER_PAGE = 10;
 
 const cache = new NodeCache();
 
@@ -116,6 +106,14 @@ app.use(express.static("public"));
  */
 app.get("/pokemon", async (req: Request, res: Response) => {
 
+  if(req.query['offset'] === undefined) {
+    req.query['offset'] = '0';
+  }
+
+  if(req.query['limit'] === undefined) {
+    req.query['limit'] = POKE_POKEMON_PER_PAGE.toString();
+  }
+  
   const getList = Effect.gen(function* (_) {
     const offset = yield* _(stringToNumber(req.query['offset'] as string));
     const limit = yield* _(stringToNumber(req.query['limit'] as string));
