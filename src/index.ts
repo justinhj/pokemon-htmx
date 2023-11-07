@@ -7,6 +7,7 @@ const port: number = 8080;
 
 const POKE_BASE_URL: string = "https://pokeapi.co/api/v2/";
 const POKE_POKEMON_URL: string = `${POKE_BASE_URL}pokemon`;
+const POKE_PER_PAGE: number = 10;
 
 const cache = new NodeCache();
 
@@ -81,7 +82,9 @@ app.use(express.static("public"));
  */
 app.get("/pokemon", async (req: Request, res: Response) => {
   try {
-    const url = `${POKE_POKEMON_URL}?offset=${req.query['offset']}&limit=${req.query['limit']}`;
+    const offset = req.query['offset'] ? req.query['offset'] : 0;
+    const limit = req.query['limit'] ? req.query['limit'] : POKE_PER_PAGE;
+    const url = `${POKE_POKEMON_URL}?offset=${offset}&limit=${limit}`;
     const cachedData = cache.get(url);
     var data;
     if (cachedData) {
