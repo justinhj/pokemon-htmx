@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/pug": "^2.0.7",
     "axios": "^1.5.0",
+    "effect": "^2.0.0-next.52",
     "express": "^4.18.2",
     "node-cache": "^5.1.2",
     "pug": "^3.0.2"

@@ -1,6 +1,19 @@
 import express, { Request, Response } from 'express';
-import axios from 'axios';
+import axios, { Axios, AxiosResponse } from 'axios';
 import NodeCache from 'node-cache';
+import { Exit, Option, Effect, Cause, pipe } from 'effect';
+import { getPokemonList, stringToNumber } from './effects';
+
+
+const o1 = Option.some(1);
+const o2 = Option.some(2);
+
+// Add the two options
+// Note the pipes are unfortunate
+const o3 = o1.pipe(Option.flatMap((a) => o2.pipe(Option.map((b) => a + b))));
+
+const o4 = Option.gen(function* (_) {});
+
 
 const app: express.Application = express();
 const port: number = 8080;
@@ -61,16 +74,38 @@ function convertUrl(urlString: string): string {
   const url = new URL(urlString);
   url.host = 'localhost:8080'; // TODO this should be the actual hostname
   url.pathname = '/pokemon';
-  url.protocol = 'http';
+  url.protocol = 'http'; // TODO copy host scheme
   return url.toString();
 }
 
+// Given the url below extract the pokemon id (1 in this case)
 // https://pokeapi.co/api/v2/pokemon/1/
 function extractPokemonId(urlString: string): string {
   const url = new URL(urlString);
   const pathname = url.pathname;
   return pathname.split('/')[4];
 }
+
+interface PokemonListResponseItem {
+  name: string;
+  url: string;
+};
+
+interface PokemonListResponse {
+  count: number;
+  next: string;
+  previous: string;
+  results: PokemonListResponseItem[];
+};
+
+const listPokemen = (offset: number, limit: number) => Effect.tryPromise({
+  try: () => axios.get(`${POKE_POKEMON_URL}?offset=${offset}&limit=${limit}`),
+  catch: (e) => console.error(e)
+});
+
+const pokemonListResponseParse = (response: AxiosResponse<any,any>) => {
+  return response.data as PokemonListResponse;
+};
 
 app.use(express.static("public"));
 
@@ -80,22 +115,38 @@ app.use(express.static("public"));
  * 'pokemonlist' Pug template with the response data.
  */
 app.get("/pokemon", async (req: Request, res: Response) => {
-  try {
-    const url = `${POKE_POKEMON_URL}?offset=${req.query['offset']}&limit=${req.query['limit']}`;
-    const cachedData = cache.get(url);
-    var data;
-    if (cachedData) {
-      data = cachedData;
-    } else {
-      let r = await axios.get(url);
-      cache.set(url, r.data, 3600);
-      data = r.data;
-    }
-    res.render("pokemonlist", { data: data, convertUrl: convertUrl, extractPokemonId: extractPokemonId });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
+
+  const getList = Effect.gen(function* (_) {
+    const offset = yield* _(stringToNumber(req.query['offset'] as string));
+    const limit = yield* _(stringToNumber(req.query['limit'] as string));
+    return yield* _(getPokemonList(offset, limit));
+  });
+
+  Effect.runPromiseExit(getList).then((exit) => {
+      Exit.match(exit, {
+        onSuccess: (data) => res.render("pokemonlist", { data: data, convertUrl: convertUrl, extractPokemonId: extractPokemonId }),
+        onFailure: (cause) => res.status(500).send(Cause.pretty(cause))
+      })
+    });
+
+  // try {
+  //   Effect.runFork(getEm);  
+
+  //   const url = `${POKE_POKEMON_URL}?offset=${req.query['offset']}&limit=${req.query['limit']}`;
+  //   const cachedData = cache.get(url);
+  //   var data;
+  //   if (cachedData) {
+  //     data = cachedData;
+  //   } else {
+  //     let r = await axios.get(url);
+  //     cache.set(url, r.data, 3600);
+  //     data = r.data;
+  //   }
+  //   res.render("pokemonlist", { data: data, convertUrl: convertUrl, extractPokemonId: extractPokemonId });
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).send("Internal Server Error");
+  // }
 });
 
 /**
