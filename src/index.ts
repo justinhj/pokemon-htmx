@@ -1,17 +1,14 @@
 import express, { Request, Response } from 'express';
-import axios, { Axios, AxiosResponse } from 'axios';
-import NodeCache from 'node-cache';
-import { Exit, Option, Effect, Cause, pipe } from 'effect';
-import { getPokemonList, stringToNumber } from './effects';
+// import NodeCache from 'node-cache';
+import { Exit, Effect, Cause } from 'effect';
+import { getPokemonById, getPokemonList, stringToNumber } from './effects';
 
 const app: express.Application = express();
 const port: number = 8080;
 
-const POKE_BASE_URL: string = "https://pokeapi.co/api/v2/";
-const POKE_POKEMON_URL: string = `${POKE_BASE_URL}pokemon`;
 const POKE_POKEMON_PER_PAGE = 10;
 
-const cache = new NodeCache();
+// const cache = new NodeCache();
 
 // pug config (templating)
 app.set("view engine", "pug");
@@ -76,27 +73,6 @@ function extractPokemonId(urlString: string): string {
   return pathname.split('/')[4];
 }
 
-interface PokemonListResponseItem {
-  name: string;
-  url: string;
-};
-
-interface PokemonListResponse {
-  count: number;
-  next: string;
-  previous: string;
-  results: PokemonListResponseItem[];
-};
-
-const listPokemen = (offset: number, limit: number) => Effect.tryPromise({
-  try: () => axios.get(`${POKE_POKEMON_URL}?offset=${offset}&limit=${limit}`),
-  catch: (e) => console.error(e)
-});
-
-const pokemonListResponseParse = (response: AxiosResponse<any,any>) => {
-  return response.data as PokemonListResponse;
-};
-
 app.use(express.static("public"));
 
 /**
@@ -154,23 +130,31 @@ app.get("/pokemon", async (req: Request, res: Response) => {
  * https://pokeapi.co/api/v2/pokemon/1/
  */
 app.get("/card", async (req: Request, res: Response) => {
-  try {
-    const id: string = req.query['id'] as string;
-    const cachedData = cache.get(id);
-    var data;
-    if (cachedData) {
-      data = cachedData;
-    } else {
-      const url = `${POKE_POKEMON_URL}/${id}`;
-      let r = await axios.get(url);
-      cache.set(id, r.data, 3600);
-      data = r.data;
-    }
-    res.render("pokemoncard", { data: data, POKEMON_TYPE_COLOURS: POKEMON_TYPE_COLOURS, POKEMON_TYPE_BACKGROUND_COLOURS: POKEMON_TYPE_BACKGROUND_COLOURS});
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
+  const getPokemon = getPokemonById(req.query['id'] as string);
+
+  Effect.runPromiseExit(getPokemon).then((exit) => {
+      Exit.match(exit, {
+        onSuccess: (data) => res.render("pokemoncard", { data: data, POKEMON_TYPE_COLOURS: POKEMON_TYPE_COLOURS, POKEMON_TYPE_BACKGROUND_COLOURS: POKEMON_TYPE_BACKGROUND_COLOURS}),
+        onFailure: (cause) => res.status(500).send(Cause.pretty(cause))
+      })
+    });
+  // try {
+  //   const id: string = req.query['id'] as string;
+  //   const cachedData = cache.get(id);
+  //   var data;
+  //   if (cachedData) {
+  //     data = cachedData;
+  //   } else {
+  //     const url = `${POKE_POKEMON_URL}/${id}`;
+  //     let r = await axios.get(url);
+  //     cache.set(id, r.data, 3600);
+  //     data = r.data;
+  //   }
+  //   res.render("pokemoncard", { data: data, POKEMON_TYPE_COLOURS: POKEMON_TYPE_COLOURS, POKEMON_TYPE_BACKGROUND_COLOURS: POKEMON_TYPE_BACKGROUND_COLOURS});
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).send("Internal Server Error");
+  // }
 });
 
 app.listen(port, () => {

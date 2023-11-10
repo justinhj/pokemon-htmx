@@ -203,10 +203,6 @@ const listPokemen = (offset: number, limit: number) => Effect.tryPromise({
   catch: (e) => console.error(e)
 });
 
-const listPokemenErr = (offset: number, limit: number) => Effect.promise(
-  () => axios.get(`${POKE_POKEMON_URL}?offset=${offset}&limit=${limit}`)
-);
-
 // Pure function, AxiosResponse to PokomenListResponse, but it could be effectful
 // and handle an error channel
 const pokemonListResponseParse = (response: AxiosResponse<any,any>) => {
@@ -215,32 +211,29 @@ const pokemonListResponseParse = (response: AxiosResponse<any,any>) => {
 
 export const stringToNumber = (input: string) => {
     try {
-        console.log(`Converting ${input} to number`);
         return Either.right(Number(input));
     } catch (e) {
         return Either.left(e);
     }
 };
 
-export const getPokemonList = (offset: number, limit: number) => 
+const getPokemon = (id: string) => Effect.tryPromise({
+  try: () => axios.get(`${POKE_POKEMON_URL}/${id}`),
+  catch: (e) => console.error(e)
+});
+
+const pokemonParse = (response: AxiosResponse<any,any>) => {
+  return response.data as Pokedex;
+};
+
+export const getPokemonById = (id: string) =>
     Effect.gen(function* (_) {
-        yield* _(Effect.log(`Getting pokemon list from ${offset} to ${limit}`));
-        const response = yield* _(listPokemen(offset, limit));
-        const pl = pokemonListResponseParse(response);
-        return pl;
+        const response = yield* _(getPokemon(id));
+        return pokemonParse(response);
     });
 
-  const e1 = Effect.gen(function* (_) {
-    const offset = yield* _(stringToNumber("0"));
-    const limit = yield* _(stringToNumber("10"));
-    const pl = yield* _(getPokemonList(offset, limit));
-    yield* _(Effect.log(pl));
-    return pl;
-  });
-
-  Effect.runPromiseExit(e1).then((e) => {
-      Exit.match(e, {
-        onSuccess: (data) => console.log(`List up to ${data.count} pokemen`),
-        onFailure: (cause) => console.log(Cause.pretty(cause))
-      })
+export const getPokemonList = (offset: number, limit: number) => 
+    Effect.gen(function* (_) {
+        const response = yield* _(listPokemen(offset, limit));
+        return pokemonListResponseParse(response);
     });
