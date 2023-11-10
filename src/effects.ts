@@ -198,7 +198,7 @@ interface PokemonListResponse {
   results: PokemonListResponseItem[];
 };
 
-const listPokemen = (offset: number, limit: number) => Effect.tryPromise({
+const listPokemen = (offset: string, limit: string) => Effect.tryPromise({
   try: () => axios.get(`${POKE_POKEMON_URL}?offset=${offset}&limit=${limit}`),
   catch: (e) => console.error(e)
 });
@@ -207,14 +207,6 @@ const listPokemen = (offset: number, limit: number) => Effect.tryPromise({
 // and handle an error channel
 const pokemonListResponseParse = (response: AxiosResponse<any,any>) => {
   return response.data as PokemonListResponse;
-};
-
-export const stringToNumber = (input: string) => {
-    try {
-        return Either.right(Number(input));
-    } catch (e) {
-        return Either.left(e);
-    }
 };
 
 const getPokemon = (id: string) => Effect.tryPromise({
@@ -232,7 +224,7 @@ export const getPokemonById = (id: string) =>
         return pokemonParse(response);
     });
 
-export const getPokemonList = (offset: number, limit: number) => 
+export const getPokemonList = (offset: string, limit: string) => 
     Effect.gen(function* (_) {
         const response = yield* _(listPokemen(offset, limit));
         return pokemonListResponseParse(response);

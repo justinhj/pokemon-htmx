@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 // import NodeCache from 'node-cache';
 import { Exit, Effect, Cause } from 'effect';
-import { getPokemonById, getPokemonList, stringToNumber } from './effects';
+import { getPokemonById, getPokemonList } from './effects';
 
 const app: express.Application = express();
 const port: number = 8080;
@@ -81,18 +81,16 @@ app.use(express.static("public"));
  * 'pokemonlist' Pug template with the response data.
  */
 app.get("/pokemon", async (req: Request, res: Response) => {
-
   if(req.query['offset'] === undefined) {
     req.query['offset'] = '0';
   }
-
   if(req.query['limit'] === undefined) {
     req.query['limit'] = POKE_POKEMON_PER_PAGE.toString();
   }
   
   const getList = Effect.gen(function* (_) {
-    const offset = yield* _(stringToNumber(req.query['offset'] as string));
-    const limit = yield* _(stringToNumber(req.query['limit'] as string));
+    const offset = req.query['offset'] as string;
+    const limit = req.query['limit'] as string;
     return yield* _(getPokemonList(offset, limit));
   });
 
