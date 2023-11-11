@@ -1,12 +1,13 @@
 import express, { Request, Response } from 'express';
 // import NodeCache from 'node-cache';
-import { Exit, Effect, Cause } from 'effect';
-import { getPokemonById, getPokemonList } from './effects';
+import { Option, Exit, Effect, Cause } from 'effect';
+import { getPokemonById, getPokemonList } from './pokeapi';
+import { safeQueryParam } from './helpers';
 
 const app: express.Application = express();
 const port: number = 8080;
 
-const POKE_POKEMON_PER_PAGE = 10;
+const POKE_POKEMON_PER_PAGE = '10';
 
 // const cache = new NodeCache();
 
@@ -80,17 +81,11 @@ app.use(express.static("public"));
  * Queries the PokeAPI for a list of Pokemon and renders the
  * 'pokemonlist' Pug template with the response data.
  */
-app.get("/pokemon", async (req: Request, res: Response) => {
-  if(req.query['offset'] === undefined) {
-    req.query['offset'] = '0';
-  }
-  if(req.query['limit'] === undefined) {
-    req.query['limit'] = POKE_POKEMON_PER_PAGE.toString();
-  }
-  
+type PokemonRequest = Request<{}, {}, {}, { offset: string, limit: string }>;
+app.get("/pokemon", async (req: PokemonRequest, res: Response) => {
   const getList = Effect.gen(function* (_) {
-    const offset = req.query['offset'] as string;
-    const limit = req.query['limit'] as string;
+    const offset = yield* _(safeQueryParam(req, 'offset', '0'));
+    const limit = yield* _(safeQueryParam(req, 'limit', POKE_POKEMON_PER_PAGE));
     return yield* _(getPokemonList(offset, limit));
   });
 
@@ -121,14 +116,17 @@ app.get("/pokemon", async (req: Request, res: Response) => {
   // }
 });
 
+
+type CardRequest = Request<{}, {}, {}, { id: string }>;
+
 /**
  * Handles GET requests to the /card endpoint.
  * Queries the PokeAPI for a single Pokemon and renders the
  * 'pokemoncard' Pug template with the response data.
  * https://pokeapi.co/api/v2/pokemon/1/
  */
-app.get("/card", async (req: Request, res: Response) => {
-  const getPokemon = getPokemonById(req.query['id'] as string);
+app.get("/card", async (req: CardRequest, res: Response) => {
+  const getPokemon = getPokemonById(req.query.id);
 
   Effect.runPromiseExit(getPokemon).then((exit) => {
       Exit.match(exit, {
