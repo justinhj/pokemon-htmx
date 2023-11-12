@@ -1,13 +1,13 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
 // import NodeCache from 'node-cache';
-import { Option, Exit, Effect, Cause } from 'effect';
-import { getPokemonById, getPokemonList } from './pokeapi';
-import { safeQueryParam } from './helpers';
+import { Option, Exit, Effect, Cause } from "effect";
+import { getPokemonById, getPokemonList } from "./pokeapi";
+import { safeQueryParam } from "./helpers";
 
 const app: express.Application = express();
 const port: number = 8080;
 
-const POKE_POKEMON_PER_PAGE = '10';
+const POKE_POKEMON_PER_PAGE = "10";
 
 // const cache = new NodeCache();
 
@@ -60,9 +60,9 @@ const POKEMON_TYPE_BACKGROUND_COLOURS = {
 //  http://localhost:8080/pokemon?offset=10&limit=10
 function convertUrl(urlString: string): string {
   const url = new URL(urlString);
-  url.host = 'localhost:8080'; // TODO this should be the actual hostname
-  url.pathname = '/pokemon';
-  url.protocol = 'http'; // TODO copy host scheme
+  url.host = "localhost:8080"; // TODO this should be the actual hostname
+  url.pathname = "/pokemon";
+  url.protocol = "http"; // TODO copy host scheme
   return url.toString();
 }
 
@@ -71,7 +71,7 @@ function convertUrl(urlString: string): string {
 function extractPokemonId(urlString: string): string {
   const url = new URL(urlString);
   const pathname = url.pathname;
-  return pathname.split('/')[4];
+  return pathname.split("/")[4];
 }
 
 app.use(express.static("public"));
@@ -81,25 +81,38 @@ app.use(express.static("public"));
  * Queries the PokeAPI for a list of Pokemon and renders the
  * 'pokemonlist' Pug template with the response data.
  */
-type PokemonRequestParams = { offset: string, limit: string };
+type PokemonRequestParams = { offset: string; limit: string };
 type PokemonRequest = Request<{}, {}, {}, PokemonRequestParams>;
 
 app.get("/pokemon", async (req: PokemonRequest, res: Response) => {
   const getList = Effect.gen(function* (_) {
-    const offset = yield* _(safeQueryParam<PokemonRequestParams>(req.query, 'offset', '0'));
-    const limit = yield* _(safeQueryParam<PokemonRequestParams>(req.query, 'limit', POKE_POKEMON_PER_PAGE));
+    const offset = yield* _(
+      safeQueryParam<PokemonRequestParams>(req.query, "offset", "0"),
+    );
+    const limit = yield* _(
+      safeQueryParam<PokemonRequestParams>(
+        req.query,
+        "limit",
+        POKE_POKEMON_PER_PAGE,
+      ),
+    );
     return yield* _(getPokemonList(offset, limit));
   });
 
   Effect.runPromiseExit(getList).then((exit) => {
-      Exit.match(exit, {
-        onSuccess: (data) => res.render("pokemonlist", { data: data, convertUrl: convertUrl, extractPokemonId: extractPokemonId }),
-        onFailure: (cause) => res.status(500).send(Cause.pretty(cause))
-      })
+    Exit.match(exit, {
+      onSuccess: (data) =>
+        res.render("pokemonlist", {
+          data: data,
+          convertUrl: convertUrl,
+          extractPokemonId: extractPokemonId,
+        }),
+      onFailure: (cause) => res.status(500).send(Cause.pretty(cause)),
     });
+  });
 
   // try {
-  //   Effect.runFork(getEm);  
+  //   Effect.runFork(getEm);
 
   //   const url = `${POKE_POKEMON_URL}?offset=${req.query['offset']}&limit=${req.query['limit']}`;
   //   const cachedData = cache.get(url);
@@ -129,11 +142,16 @@ app.get("/card", async (req: CardRequest, res: Response) => {
   const getPokemon = getPokemonById(req.query.id);
 
   Effect.runPromiseExit(getPokemon).then((exit) => {
-      Exit.match(exit, {
-        onSuccess: (data) => res.render("pokemoncard", { data: data, POKEMON_TYPE_COLOURS: POKEMON_TYPE_COLOURS, POKEMON_TYPE_BACKGROUND_COLOURS: POKEMON_TYPE_BACKGROUND_COLOURS}),
-        onFailure: (cause) => res.status(500).send(Cause.pretty(cause))
-      })
+    Exit.match(exit, {
+      onSuccess: (data) =>
+        res.render("pokemoncard", {
+          data: data,
+          POKEMON_TYPE_COLOURS: POKEMON_TYPE_COLOURS,
+          POKEMON_TYPE_BACKGROUND_COLOURS: POKEMON_TYPE_BACKGROUND_COLOURS,
+        }),
+      onFailure: (cause) => res.status(500).send(Cause.pretty(cause)),
     });
+  });
   // try {
   //   const id: string = req.query['id'] as string;
   //   const cachedData = cache.get(id);

@@ -1,24 +1,25 @@
 .poke-card-title {
-    text-align: center;
-    padding: 10px;
-    border-radius: 10px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .pokemon-card {
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    width: 400px;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  width: 400px;
 }
 
 .pokemon-card-content {
-    background-color: #4A90E2;
+  background-color: #4a90e2;
 }
 
 .poke-card-img {
-    width: 200px;
-    height: 200px;
+  width: 200px;
+  height: 200px;
 }
 
 .nav-button {
-    background-color: #4A90E2;
+  background-color: #4a90e2;
+}
