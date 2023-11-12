@@ -81,11 +81,13 @@ app.use(express.static("public"));
  * Queries the PokeAPI for a list of Pokemon and renders the
  * 'pokemonlist' Pug template with the response data.
  */
-type PokemonRequest = Request<{}, {}, {}, { offset: string, limit: string }>;
+type PokemonRequestParams = { offset: string, limit: string };
+type PokemonRequest = Request<{}, {}, {}, PokemonRequestParams>;
+
 app.get("/pokemon", async (req: PokemonRequest, res: Response) => {
   const getList = Effect.gen(function* (_) {
-    const offset = yield* _(safeQueryParam(req, 'offset', '0'));
-    const limit = yield* _(safeQueryParam(req, 'limit', POKE_POKEMON_PER_PAGE));
+    const offset = yield* _(safeQueryParam<PokemonRequestParams>(req.query, 'offset', '0'));
+    const limit = yield* _(safeQueryParam<PokemonRequestParams>(req.query, 'limit', POKE_POKEMON_PER_PAGE));
     return yield* _(getPokemonList(offset, limit));
   });
 
@@ -116,15 +118,13 @@ app.get("/pokemon", async (req: PokemonRequest, res: Response) => {
   // }
 });
 
-
-type CardRequest = Request<{}, {}, {}, { id: string }>;
-
 /**
  * Handles GET requests to the /card endpoint.
  * Queries the PokeAPI for a single Pokemon and renders the
  * 'pokemoncard' Pug template with the response data.
  * https://pokeapi.co/api/v2/pokemon/1/
  */
+type CardRequest = Request<{}, {}, {}, { id: string }>;
 app.get("/card", async (req: CardRequest, res: Response) => {
   const getPokemon = getPokemonById(req.query.id);
 
