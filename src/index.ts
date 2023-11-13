@@ -2,20 +2,12 @@ import express, { Request, Response } from "express";
 import { Exit, Effect, Cause } from "effect";
 import { getPokemonById, getPokemonList } from "./pokeapi";
 import { safeQueryParam } from "./helpers";
-import { ContentCache } from "cacheservice";
+// import { ContentCache } from "cacheservice";
 
 const app: express.Application = express();
 const port: number = 8080;
 
-<<<<<<< HEAD
-const POKE_BASE_URL: string = "https://pokeapi.co/api/v2/";
-const POKE_POKEMON_URL: string = `${POKE_BASE_URL}pokemon`;
-const POKE_PER_PAGE: number = 10;
-
-const cache = new NodeCache();
-=======
 const POKE_POKEMON_PER_PAGE = "10";
->>>>>>> effect
 
 // pug config (templating)
 app.set("view engine", "pug");
@@ -87,27 +79,6 @@ app.use(express.static("public"));
  * Queries the PokeAPI for a list of Pokemon and renders the
  * 'pokemonlist' Pug template with the response data.
  */
-<<<<<<< HEAD
-app.get("/pokemon", async (req: Request, res: Response) => {
-  try {
-    const offset = req.query['offset'] ? req.query['offset'] : 0;
-    const limit = req.query['limit'] ? req.query['limit'] : POKE_PER_PAGE;
-    const url = `${POKE_POKEMON_URL}?offset=${offset}&limit=${limit}`;
-    const cachedData = cache.get(url);
-    var data;
-    if (cachedData) {
-      data = cachedData;
-    } else {
-      let r = await axios.get(url);
-      cache.set(url, r.data, 3600);
-      data = r.data;
-    }
-    res.render("pokemonlist", { data: data, convertUrl: convertUrl, extractPokemonId: extractPokemonId });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-=======
 type PokemonRequestParams = { offset: string; limit: string };
 type PokemonRequest = Request<{}, {}, {}, PokemonRequestParams>;
 
@@ -156,7 +127,6 @@ app.get("/pokemon", async (req: PokemonRequest, res: Response) => {
   //   console.error(error);
   //   res.status(500).send("Internal Server Error");
   // }
->>>>>>> effect
 });
 
 /**
