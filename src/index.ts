@@ -1,15 +1,13 @@
 import express, { Request, Response } from "express";
-// import NodeCache from 'node-cache';
-import { Option, Exit, Effect, Cause } from "effect";
+import { Exit, Effect, Cause } from "effect";
 import { getPokemonById, getPokemonList } from "./pokeapi";
 import { safeQueryParam } from "./helpers";
+import { ContentCache } from "cacheservice";
 
 const app: express.Application = express();
 const port: number = 8080;
 
 const POKE_POKEMON_PER_PAGE = "10";
-
-// const cache = new NodeCache();
 
 // pug config (templating)
 app.set("view engine", "pug");

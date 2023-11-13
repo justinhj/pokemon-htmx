@@ -38,20 +38,22 @@ const ContentCacheLive = ContentCache.of({
 // TODO Add a test implementation
 
 // Try out the live implementation. What we do here is store a key value then check we can look it up. Then we lookup a missing key and handle the failure.
+/*
 let program = Effect.gen(function* (_) {
-  const cc = yield* _(ContentCache);
-  const result = yield* _(cc.store("foo", "bar"));
-  const result2 = yield* _(cc.lookup("foo"));
-  const result3 = yield* _(
-    cc.lookup("foofoo"),
-    Effect.orElseSucceed(() => "foofoo not found"),
-  );
-  yield* _(Effect.log(result2));
-  yield* _(Effect.log(result3));
-  return true;
+    const cc = yield* _(ContentCache);
+    const result = yield* _(cc.store("foo", "bar"));
+    const result2 = yield* _(cc.lookup("foo"));
+    const result3 = yield* _(
+        cc.lookup("foofoo"),
+        Effect.orElseSucceed(() => "foofoo not found"),
+    );
+    yield* _(Effect.log(result2));
+    yield* _(Effect.log(result3));
+    return true;
 });
 
 const exit = Effect.runSyncExit(
-  Effect.provideService(program, ContentCache, ContentCacheLive),
+    Effect.provideService(program, ContentCache, ContentCacheLive),
 );
 console.log(exit);
+*/
