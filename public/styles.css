@@ -23,3 +23,15 @@
 .nav-button {
   background-color: #4a90e2;
 }
+
+.htmx-logo {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif !important;
+  font-size: 28px;
+  color: #333333;
+}
+.htmx-bold-logo {
+  font-weight: normal;
+  color: #3465a4;
+}

@@ -6,7 +6,7 @@ export interface ContentCache {
   readonly lookup: (key: string) => Effect.Effect<never, boolean, string>;
   readonly store: (
     key: string,
-    value: string,
+    value: string, // TTL would be an option here
   ) => Effect.Effect<never, boolean, boolean>;
 }
 
