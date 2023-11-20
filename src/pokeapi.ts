@@ -9,6 +9,7 @@ import {
   pipe,
 } from "effect";
 import axios, { Axios, AxiosResponse } from "axios";
+import { ContentCache } from "./cacheservice";
 
 const POKE_BASE_URL: string = "https://pokeapi.co/api/v2/";
 const POKE_POKEMON_URL: string = `${POKE_BASE_URL}pokemon`;
@@ -207,11 +208,26 @@ interface PokemonListResponse {
   results: PokemonListResponseItem[];
 }
 
-const listPokemen = (offset: string, limit: string) =>
-  Effect.tryPromise({
-    try: () => axios.get(`${POKE_POKEMON_URL}?offset=${offset}&limit=${limit}`),
-    catch: (e) => console.error(e),
+const listPokemen = (offset: string, limit: string) => {
+  const url = `${POKE_POKEMON_URL}?offset=${offset}&limit=${limit}`;  
+  const axiosGet = Effect.tryPromise({
+      try: () => axios.get(`${POKE_POKEMON_URL}?offset=${offset}&limit=${limit}`),
+      catch: (e) => console.error(e),
+    });
+
+  return Effect.gen(function* (_) {
+    const cache = yield* _(ContentCache);
+    // const cachedData = yield* _(cache.lookup(url));
+
+    // What should this do?
+    // Firstly we need an effect that takes a url and returns a string using axios.get
+    // 
+
+    const response = yield* _(axiosGet);
+    
+    return response;
   });
+};
 
 // Pure function, AxiosResponse to PokomenListResponse, but it could be effectful
 // and handle an error channel
@@ -240,3 +256,8 @@ export const getPokemonList = (offset: string, limit: string) =>
     const response = yield* _(listPokemen(offset, limit));
     return pokemonListResponseParse(response);
   });
+
+/* Notes on how to make the cache service work.
+1. The cache service deals only with strings. It is up to the caller to serialize and deserialize.
+2. Functions that make fetch requests should have the cache service injected into the context.
+*/

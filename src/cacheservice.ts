@@ -16,7 +16,7 @@ export const ContentCache = Context.Tag<ContentCache>("cacheservice");
 const cache = new NodeCache();
 
 // Live implementation using node-cache
-const ContentCacheLive = ContentCache.of({
+export const ContentCacheLive = ContentCache.of({
   lookup: (k) => {
     const value: string | undefined = cache.get(k);
     if (value === undefined) {

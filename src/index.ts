@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
-import { Exit, Effect, Cause } from "effect";
+import { Exit, Effect, Cause, pipe } from "effect";
 import { getPokemonById, getPokemonList } from "./pokeapi";
 import { safeQueryParam } from "./helpers";
-// import { ContentCache } from "cacheservice";
+import { ContentCache, ContentCacheLive } from "cacheservice";
 
 const app: express.Application = express();
 const port: number = 8080;
@@ -83,7 +83,7 @@ type PokemonRequestParams = { offset: string; limit: string };
 type PokemonRequest = Request<{}, {}, {}, PokemonRequestParams>;
 
 app.get("/pokemon", async (req: PokemonRequest, res: Response) => {
-  const getList = Effect.gen(function* (_) {
+  const getList = pipe(Effect.gen(function* (_) {
     const offset = yield* _(
       safeQueryParam<PokemonRequestParams>(req.query, "offset", "0"),
     );
@@ -95,7 +95,7 @@ app.get("/pokemon", async (req: PokemonRequest, res: Response) => {
       ),
     );
     return yield* _(getPokemonList(offset, limit));
-  });
+  }), Effect.provideService(ContentCache, ContentCacheLive));
 
   Effect.runPromiseExit(getList).then((exit) => {
     Exit.match(exit, {
