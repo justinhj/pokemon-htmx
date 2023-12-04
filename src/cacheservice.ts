@@ -1,4 +1,4 @@
-import { Effect, Context } from "effect";
+import { Effect, Context, TestClock } from "effect";
 import NodeCache from "node-cache";
 
 // TODO TTL and think about store failure
@@ -35,25 +35,39 @@ export const ContentCacheLive = ContentCache.of({
   },
 });
 
-// TODO Add a test implementation
 
-// Try out the live implementation. What we do here is store a key value then check we can look it up. Then we lookup a missing key and handle the failure.
-/*
-let program = Effect.gen(function* (_) {
-    const cc = yield* _(ContentCache);
-    const result = yield* _(cc.store("foo", "bar"));
-    const result2 = yield* _(cc.lookup("foo"));
-    const result3 = yield* _(
-        cc.lookup("foofoo"),
-        Effect.orElseSucceed(() => "foofoo not found"),
-    );
-    yield* _(Effect.log(result2));
-    yield* _(Effect.log(result3));
-    return true;
-});
+// TODO Needs an initial state with the initial cache entries and flags to determine the behaviour of the cache
+// For example we may want to disable writes, make all reads fail and so on.
+export interface ContentCacheTest extends ContentCache {
+  // Remove all the cache entries and replace with a new set of test data
+  setAll: (cache: { [key: string]: string} ) => void;
+}
 
-const exit = Effect.runSyncExit(
-    Effect.provideService(program, ContentCache, ContentCacheLive),
-);
-console.log(exit);
-*/
+// Implementation of the test cache
+class ContentCacheImpl implements ContentCacheTest {
+  constructor(
+    private testCache: { [key: string]: string } = {},
+  ) {}
+
+  setAll(cache: { [key: string]: string} ): void {
+    Object.assign(this.testCache, cache)
+  }
+
+  lookup(key: string): Effect.Effect<never, boolean, string> {
+    const value: string | undefined = this.testCache[key];
+    if (value === undefined) {
+      return Effect.fail(false);
+    } else {
+      return Effect.succeed(value);
+    }
+  }
+
+  store(k: string, v: string): Effect.Effect<never, boolean, boolean> {
+    this.testCache[k] = v;
+    return Effect.succeed(true);
+  }
+};
+
+
+// Test implementation using node-cache
+export const ContentCacheTest: ContentCache = ContentCache.of(new ContentCacheImpl());
