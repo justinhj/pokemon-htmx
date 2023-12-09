@@ -7,3 +7,40 @@ This is an org-mode file so probably looks weird if you're not in Emacs.
 - Improve css formatting of header
 - Complete caching nicely with Effect
 - Add some fun AI interaction
+** Code sample from discord
+Thanks @TheStockBroker
+
+#+BEGIN_SRC typescript
+interface Pokemons {
+  readonly All: Effect.Effect<never, PokemonsError, Pokemon[]>
+  readonly range: (offset: number, limit: number) =>
+    Effect.Effect<never, PokemonsError | OutOfRangeError, Pokemon[]>
+  readonly ofCodex: (n: number) => 
+    Effect.Effect<never, PokemonsError | OutOfRangeError, Pokemon>
+}
+const tag = Context.Tag<Pokemons>("Pokemons")
+
+const PokemonsService = Effect.gen(function* (_) {
+  const client = yield* _(HttpClient.client.Client)
+  const pokemonClient = client.pipe(
+    HttpClient.client.mapRequest("https://pokeapi.co/api/v2/")
+  )
+  const pokemon = HttpClient.request.get("/pokemon")
+  
+  return tag.of({
+    All: pokemonClient(pokemon).pipe(
+      Effect.mapError(_ => new PokemonsError({ error: _ }))
+    ),
+    range: (offset, limit) => (...),
+    ...
+  })
+})
+
+const live = Layer.effect(tag, PokemonsService)
+const charizard = new Pokemon({name: "Charizard"})
+const mock = Layer.succeed(tag, tag.of({
+    All: Effect.succeed([charizard]),
+    range: () => Effect.succeed([charizard]),
+    ofCodex: () => Effect.succeed(charizard)
+})
+#+END_SRC
