@@ -34,26 +34,46 @@ const live = Layer.effect(tag, PokemonsServiceImpl)
 
 const charizard = {name: "Charizard", power: 10};
 
+
+// Create a mock service that returns a single pokemon
 const mock = Layer.succeed(tag, tag.of({
     All: Effect.succeed([charizard]),
     range: (offset, limit) => Effect.succeed([charizard]),
     ofCodex: (n: number) => Effect.succeed(charizard)
 }));
 
-// Use mock service
+// Another mock service that returns errors
+const mockErrors = Layer.succeed(tag, tag.of({
+    All: Effect.fail({description: "All failed. There are no pokemon any longer?"}),
+    range: (offset, limit) => Effect.fail({description: `out of range ${offset} ${limit}`}),
+    ofCodex: (n) => Effect.fail({description: `out of range ${n}`})
+}));
 
+// Make a program to the test the services
 const program = Effect.gen(function* (_) {
     const lookup = 10;
     const service = yield* _(tag);
     const getTen = yield* _(service.ofCodex(lookup));
-    console.log(`Pokemon ${lookup} is ${getTen.name} with power ${getTen.power}`);
+    yield* _(Console.info(`Pokemon ${lookup} is ${getTen.name} with power ${getTen.power}`));
 })
 
+// Test with the mock
 const withMock = Effect.provide(program, mock);
 Effect.runPromiseExit(withMock).then((exit) => {
 Exit.match(exit, {
         onSuccess: (data) => {
-            console.log("win")
+            console.log("Program complete")
+        },
+        onFailure: (cause) => console.log(JSON.stringify(cause))
+    });
+});
+
+// Test with the mock that has only errors
+const withMockErrors = Effect.provide(program, mockErrors);
+Effect.runPromiseExit(withMockErrors).then((exit) => {
+Exit.match(exit, {
+        onSuccess: (data) => {
+            console.log("Program complete")
         },
         onFailure: (cause) => console.log(JSON.stringify(cause))
     });
