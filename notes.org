@@ -4,6 +4,8 @@
 ** Note
 This is an org-mode file so probably looks weird if you're not in Emacs.
 ** Effect problems 
+Converting between javascript and typed errors. You have to know the full range of errors and encode them in a type.
+
 Type chess. Often hard to get the right types, documentation not great.
 
 No type error when forget to yield an effect. only one of these below actually executes...

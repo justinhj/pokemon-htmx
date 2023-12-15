@@ -83,7 +83,7 @@ type PokemonRequestParams = { offset: string; limit: string };
 type PokemonRequest = Request<{}, {}, {}, PokemonRequestParams>;
 
 app.get("/pokemon", async (req: PokemonRequest, res: Response) => {
-  const getList = pipe(Effect.gen(function* (_) {
+  const getList = Effect.provide(Effect.gen(function* (_) {
     const offset = yield* _(
       safeQueryParam<PokemonRequestParams>(req.query, "offset", "0"),
     );
@@ -95,7 +95,7 @@ app.get("/pokemon", async (req: PokemonRequest, res: Response) => {
       ),
     );
     return yield* _(getPokemonList(offset, limit));
-  }), Effect.provideService(ContentCache, ContentCacheLive));
+  }), ContentCacheLive);
 
   Effect.runPromiseExit(getList).then((exit) => {
     Exit.match(exit, {

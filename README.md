@@ -1,6 +1,8 @@
 # Playing with htmx via the Pokemon API
 
-A simple browser for Pokedex information, which you can probably extend to do cool and interesting stuff.
+A simple browser for Pokedex information.
+
+<img width="1175" alt="Screenshot 2023-12-14 at 8 53 04 PM" src="https://github.com/justinhj/pokemon-htmx/assets/753059/de438006-971b-4ef0-9caa-80d940d70ccc">
 
 ## htmx
 
